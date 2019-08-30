@@ -2,10 +2,14 @@ import os
 from typing import Dict, List, Optional
 
 import requests
+from fastapi import HTTPException
 from jose import jwt, jwk
 from jose.utils import base64url_decode
 
-from app.exceptions import JWTNoPublicKey, JWTUsernameNotFound
+
+class JWTNoPublicKey(Exception):
+    pass
+
 
 JWK = Dict[str, str]
 JWKS = Dict[str, List[JWK]]
@@ -39,9 +43,8 @@ def verify_jwt(token: str, jwks: JWKS) -> bool:
     return hmac_key.verify(message.encode(), decoded_signature)
 
 
-def get_user_from_jwt(authorization: str):
+def get_user_from_jwt(jwt_token: str) -> str:
     try:
-        token = authorization.replace("Bearer", "").strip()
-        return jwt.get_unverified_claims(token)["username"]
+        return jwt.get_unverified_claims(jwt_token)["username"]
     except KeyError:
-        raise JWTUsernameNotFound()
+        raise HTTPException(status_code=400, detail="Username not found in JWT.")
