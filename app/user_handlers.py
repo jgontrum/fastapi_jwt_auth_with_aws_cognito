@@ -1,13 +1,10 @@
 from fastapi import APIRouter, Depends
 
-from app.JWTBearer import JWTBearer, JWTAuthorizationCredentials
-from app.auth import jwks
+from app.auth import get_current_user
 
 router = APIRouter()
-auth = JWTBearer(jwks)
 
 
 @router.get("/test")
-async def read_users(authorization: JWTAuthorizationCredentials = Depends(auth)):
-    user = authorization.claims["username"]
-    return {"username": user}
+async def test(username: str = Depends(get_current_user)):
+    return {"username": username}
