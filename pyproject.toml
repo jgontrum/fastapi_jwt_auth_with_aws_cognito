@@ -10,6 +10,8 @@ python = "^3.7"
 fastapi = "^0.36.0"
 requests = "^2.22"
 python-jose = "^3.0"
+python-dotenv = "^0.10.3"
+uvicorn = "^0.8.6"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^18.3-alpha.4",allows-prereleases = true}
